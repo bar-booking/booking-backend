@@ -31,7 +31,7 @@ async function bootstrap() {
     },
   })
 
-  await app.listen(8000)
+  await app.listen(process.env.NEST_PORT || 8000, process.env.NEST_ADDRESS)
 }
 
 bootstrap()
