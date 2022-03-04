@@ -21,8 +21,9 @@ services:
     restart: always
     depends_on:
       - pg
-    build:
-      context: .
+    image: xalvaine/booking-backend:${VERSION}
+    env_file:
+      - .env
     environment:
       - NEST_PORT=80
       - NEST_ADDRESS=0.0.0.0
