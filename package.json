@@ -9,7 +9,7 @@
     "prebuild": "rimraf dist",
     "build": "nest build",
     "docker:dev": "docker compose up -d",
-    "docker:prod": "docker compose -f production.yml up -d --build",
+    "docker:prod": "docker-compose -f production.yml up -d --build",
     "format": "prettier --write \"**/*.ts\" \"test/**/*.ts\"",
     "start": "nest start",
     "start:dev": "yarn docker:dev && nest start --watch",
