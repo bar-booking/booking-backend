@@ -8,6 +8,8 @@ services:
       - .env
     volumes:
       - pg:/var/lib/postgresql/data
+    networks:
+      - app-network
 
   pgadmin:
     restart: always
@@ -16,6 +18,8 @@ services:
       - .env
     volumes:
       - pgadmin:/var/lib/pgadmin
+    networks:
+      - app-network
 
   nest:
     restart: always
@@ -27,24 +31,47 @@ services:
     environment:
       - NEST_PORT=80
       - NEST_ADDRESS=0.0.0.0
-    expose:
-      - 8000
     volumes:
       - nest_node_modules:/home/app/node_modules
     working_dir: /home/app
     command: yarn start:prod
+    networks:
+      - app-network
 
   nginx:
     restart: always
-    image: nginx:stable
+    image: nginx:1.21-alpine-perl
     depends_on:
       - nest
+    environment:
+      - SERVER_NAME=${SERVER_NAME}
     volumes:
-      - ./nginx.conf:/etc/nginx/conf.d/default.conf
+      - ./nginx.conf.template:/etc/nginx/templates/default.conf.template
     ports:
       - '80:80'
+      - '443:443'
+
+    networks:
+      - app-network
+
+  certbot:
+    depends_on:
+      - nginx
+    image: certbot/certbot
+    restart: unless-stopped
+    volumes:
+      - certbot-etc:/etc/letsencrypt
+      - certbot-var:/var/www/certbot
+      - web-root:/var/www/html
+    command: certonly --webroot -w /var/www/html -d ${DOMAIN} --non-interactive --agree-tos --register-unsafely-without-email ${STAGING}
 
 volumes:
   pg:
   pgadmin:
   nest_node_modules:
+  certbot-etc:
+  certbot-var:
+  web-root:
+
+networks:
+  app-network:
