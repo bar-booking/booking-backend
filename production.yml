@@ -47,6 +47,7 @@ services:
       - SERVER_NAME=${SERVER_NAME}
     volumes:
       - ./nginx.conf.template:/etc/nginx/templates/default.conf.template
+      - dhparam:/etc/ssl/certs
     ports:
       - '80:80'
       - '443:443'
@@ -74,11 +75,6 @@ volumes:
   certbot-var:
   web-root:
   dhparam:
-    driver: local
-    driver_opts:
-      type: none
-      device: /home/sammy/node_project/dhparam/
-      o: bind
 
 networks:
   app-network:
