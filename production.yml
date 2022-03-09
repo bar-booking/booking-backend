@@ -2,7 +2,7 @@ version: '3.8'
 
 services:
   pg:
-    restart: always
+    restart: unless-stopped
     image: postgres:13-alpine
     env_file:
       - .env
@@ -12,7 +12,7 @@ services:
       - app-network
 
   pgadmin:
-    restart: always
+    restart: unless-stopped
     image: dpage/pgadmin4
     env_file:
       - .env
@@ -22,7 +22,7 @@ services:
       - app-network
 
   nest:
-    restart: always
+    restart: unless-stopped
     depends_on:
       - pg
     image: xalvaine/booking-backend:${VERSION}
@@ -39,7 +39,7 @@ services:
       - app-network
 
   nginx:
-    restart: always
+    restart: unless-stopped
     image: nginx:1.21-alpine-perl
     depends_on:
       - nest
@@ -63,6 +63,7 @@ services:
       - certbot-etc:/etc/letsencrypt
       - certbot-var:/var/www/certbot
       - web-root:/var/www/html
+      - dhparam:/etc/ssl/certs
     command: certonly --webroot -w /var/www/html -d ${SERVER_NAME} --non-interactive --agree-tos --register-unsafely-without-email ${STAGING}
 
 volumes:
@@ -72,6 +73,12 @@ volumes:
   certbot-etc:
   certbot-var:
   web-root:
+  dhparam:
+    driver: local
+    driver_opts:
+      type: none
+      device: /home/sammy/node_project/dhparam/
+      o: bind
 
 networks:
   app-network:
