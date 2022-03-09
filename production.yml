@@ -47,6 +47,9 @@ services:
       - SERVER_NAME=${SERVER_NAME}
     volumes:
       - ./nginx.conf.template:/etc/nginx/templates/default.conf.template
+      - certbot-etc:/etc/letsencrypt
+      - certbot-var:/var/www/certbot
+      - web-root:/var/www/html
       - ./dhparam:/etc/ssl/certs
     ports:
       - '80:80'
@@ -59,7 +62,6 @@ services:
     depends_on:
       - nginx
     image: certbot/certbot
-    restart: unless-stopped
     volumes:
       - certbot-etc:/etc/letsencrypt
       - certbot-var:/var/www/certbot
