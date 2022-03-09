@@ -12,7 +12,7 @@ async function bootstrap() {
   const app = await NestFactory.create<NestFastifyApplication>(
     AppModule,
     new FastifyAdapter({ logger: true }),
-    { cors: { origin: `http://localhost:3000` } },
+    { cors: { origin: process.env.CORS_ORIGINS.split(`,`) } },
   )
 
   app.useGlobalPipes(new ValidationPipe({ transform: true }))
