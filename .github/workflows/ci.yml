@@ -79,5 +79,5 @@ jobs:
             cd /home/github/booking-backend
             git fetch origin main
             git reset --hard origin/main
-            docker image prune -a --filter "until=24h"
+            docker image prune -a -f --filter "until=24h"
             yarn docker:prod
