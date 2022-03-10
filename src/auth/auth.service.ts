@@ -27,20 +27,22 @@ export class AuthService {
   private firebaseApiKey = process.env.FIREBASE_API_KEY
 
   async sendSMS(triggerVerificationDto: TriggerVerificationDto) {
-    const { data } = await lastValueFrom(
-      this.httpService.post<{ sessionInfo: string }>(
-        process.env.FIREBASE_SEND_VERIFICATION_CODE_ENDPOINT,
-        triggerVerificationDto,
-        { params: { key: this.firebaseApiKey } },
-      ),
-    )
+    try {
+      const { data } = await lastValueFrom(
+        this.httpService.post<{ sessionInfo: string }>(
+          process.env.FIREBASE_SEND_VERIFICATION_CODE_ENDPOINT,
+          triggerVerificationDto,
+          { params: { key: this.firebaseApiKey } },
+        ),
+      )
 
-    await this.cacheManager.set(
-      triggerVerificationDto.phoneNumber,
-      data.sessionInfo,
-    )
-
-    return
+      await this.cacheManager.set(
+        triggerVerificationDto.phoneNumber,
+        data.sessionInfo,
+      )
+    } catch (error) {
+      console.error(error, error.message, error.response.data)
+    }
   }
 
   async validateLocal({ phoneNumber, code }: ObtainTokenPairDto) {
