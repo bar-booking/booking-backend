@@ -22,6 +22,7 @@ server {
 
     location /pgadmin4/ {
         proxy_set_header X-Script-Name /pgadmin4;
+        proxy_set_header X-Scheme $scheme;
         proxy_set_header Host $host;
         proxy_pass http://pgadmin:80/;
         proxy_redirect off;
