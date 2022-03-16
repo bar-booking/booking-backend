@@ -8,6 +8,7 @@ import {
   UnauthorizedException,
 } from '@nestjs/common'
 import { ApiTags } from '@nestjs/swagger'
+import { FastifyRequest } from 'fastify'
 
 import { AuthService } from './auth.service'
 import { ObtainTokenPairDto } from './dto/obtain-token-pair.dto'
@@ -24,9 +25,9 @@ export class AuthController {
   @Post(`/number`)
   sendCode(
     @Body() triggerVerificationDto: TriggerVerificationDto,
-    @Request() req,
+    @Request() req: FastifyRequest,
   ) {
-    return this.authService.sendSMS(triggerVerificationDto, req.headers.host)
+    return this.authService.sendSMS(triggerVerificationDto, req.headers)
   }
 
   @UseGuards(LocalAuthGuard)
