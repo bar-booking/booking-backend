@@ -62,7 +62,7 @@ export class AuthService {
         data.sessionInfo,
       )
     } catch (error) {
-      console.error(error, JSON.stringify(error.message), JSON.stringify(error.response?.data))
+      console.error(error, JSON.stringify(error.message), error.response?.data)
       throw new BadRequestException()
     }
   }
