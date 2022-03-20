@@ -8,7 +8,6 @@ import {
 } from '@nestjs/common'
 import { JwtService } from '@nestjs/jwt'
 import { Cache } from 'cache-manager'
-import { FastifyRequest } from 'fastify'
 import { lastValueFrom } from 'rxjs'
 
 import { User } from 'users/entities/user.entity'
@@ -33,18 +32,7 @@ export class AuthService {
   private jwtRefreshSecret = process.env.JWT_REFRESH_SECRET
   private firebaseApiKey = process.env.FIREBASE_API_KEY
 
-  async sendSMS(
-    triggerVerificationDto: TriggerVerificationDto,
-    headers: FastifyRequest[`headers`],
-  ) {
-    this.httpService.axiosRef.interceptors.request.use((request) => {
-      console.error(`Starting Request`, JSON.stringify(request, null, 2))
-      return request
-    })
-    console.error(`Headers:`, headers)
-
-    // const { referer, host, origin } = headers
-
+  async sendSMS(triggerVerificationDto: TriggerVerificationDto, host: string) {
     try {
       const { data } = await lastValueFrom(
         this.httpService.post<{ sessionInfo: string }>(
@@ -52,7 +40,7 @@ export class AuthService {
           triggerVerificationDto,
           {
             params: { key: this.firebaseApiKey },
-            // headers: { referer, host, origin },
+            headers: { Host: host },
           },
         ),
       )
@@ -62,7 +50,7 @@ export class AuthService {
         data.sessionInfo,
       )
     } catch (error) {
-      console.error(error, JSON.stringify(error.message), error.response?.data)
+      console.error(error, error.message, error.response.data)
       throw new BadRequestException()
     }
   }
