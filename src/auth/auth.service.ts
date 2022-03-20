@@ -1,11 +1,5 @@
 import { HttpService } from '@nestjs/axios'
-import {
-  Inject,
-  Injectable,
-  CACHE_MANAGER,
-  UnauthorizedException,
-  BadRequestException,
-} from '@nestjs/common'
+import { Inject, Injectable, CACHE_MANAGER } from '@nestjs/common'
 import { JwtService } from '@nestjs/jwt'
 import { Cache } from 'cache-manager'
 import { lastValueFrom } from 'rxjs'
@@ -32,16 +26,13 @@ export class AuthService {
   private jwtRefreshSecret = process.env.JWT_REFRESH_SECRET
   private firebaseApiKey = process.env.FIREBASE_API_KEY
 
-  async sendSMS(triggerVerificationDto: TriggerVerificationDto, host: string) {
+  async sendSMS(triggerVerificationDto: TriggerVerificationDto) {
     try {
       const { data } = await lastValueFrom(
         this.httpService.post<{ sessionInfo: string }>(
           process.env.FIREBASE_SEND_VERIFICATION_CODE_ENDPOINT,
           triggerVerificationDto,
-          {
-            params: { key: this.firebaseApiKey },
-            headers: { Host: host },
-          },
+          { params: { key: this.firebaseApiKey } },
         ),
       )
 
@@ -51,7 +42,6 @@ export class AuthService {
       )
     } catch (error) {
       console.error(error, error.message, error.response.data)
-      throw new BadRequestException()
     }
   }
 
@@ -111,11 +101,6 @@ export class AuthService {
         secret: this.jwtRefreshSecret,
       },
     )
-
-    if (!user) {
-      throw new UnauthorizedException()
-    }
-
     delete user.exp
     delete user.iat
 

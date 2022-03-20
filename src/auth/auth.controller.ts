@@ -22,11 +22,8 @@ export class AuthController {
 
   @HttpCode(204)
   @Post(`/number`)
-  sendCode(
-    @Body() triggerVerificationDto: TriggerVerificationDto,
-    @Request() req,
-  ) {
-    return this.authService.sendSMS(triggerVerificationDto, req.headers.host)
+  sendCode(@Body() triggerVerificationDto: TriggerVerificationDto) {
+    return this.authService.sendSMS(triggerVerificationDto)
   }
 
   @UseGuards(LocalAuthGuard)
