@@ -14,7 +14,7 @@
     "start": "nest start",
     "start:dev": "yarn docker:dev && nest start --watch",
     "start:debug": "nest start --debug --watch",
-    "start:prod": "typeorm schema:sync --config ormconfig.json && node dist/main",
+    "start:prod": "typeorm schema:sync --config ormconfig.json && node dist/src/main",
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix"
   },
   "dependencies": {
