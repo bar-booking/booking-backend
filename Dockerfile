@@ -7,4 +7,4 @@ RUN yarn install --immutable
 COPY . .
 RUN yarn build
 RUN yarn install --production --immutable
-RUN ts-node ./node_modules/.bin/typeorm schema:sync
+CMD ts-node ./node_modules/.bin/typeorm schema:sync
