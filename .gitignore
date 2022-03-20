@@ -36,6 +36,7 @@ lerna-debug.log*
 
 # Env
 .env
+ormconfig.json
 
 # Dhparam
 dhparam
